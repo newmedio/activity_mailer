@@ -47,6 +47,8 @@ ActivityMailer.shared_connection.register_template!("receipt")
 
 This copies the default template in each language to a new template that can be further customized.
 
+## Sending Mail
+
 Then, to use the templates, just do the following:
 
 ```
