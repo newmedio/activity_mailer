@@ -103,7 +103,7 @@ class ActivityMailer
 
 		templ = templ_list.first
 
-		message_info[:global_merge_vars] ||= {}
+		message_info[:global_merge_vars] ||= []
 		data.each do |k, v|
 			message_info[:global_merge_vars].push({:name => k, :content => v})
 		end
