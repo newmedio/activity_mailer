@@ -26,6 +26,7 @@ mconn = Mandrill::API.new("MANDRILL_API_KEY")
 service_name = "my-service-name" 
 conn = ActivityMailer.new(mconn, service_name)
 conn.supported_languages = ["en", "fr", "es"]
+ActivityMailer.shared_connection=(conn)
 ```
 
 ## Getting Templates Ready
@@ -64,7 +65,7 @@ ActivityMailer.shared_connection.deliver_email!(
 	"receipt", 
 	"en", 
 	{ "to" => recipients }, 
-	{ "key" => "val", "key2" => "val2" }
+	[{ "key" => "val", "key2" => "val2" }]
 )
 ```
 
