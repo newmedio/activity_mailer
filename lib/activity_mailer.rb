@@ -31,10 +31,9 @@ class ActivityMailer
 
 	# This should only be done once
 	def create_default_template!(from_addr, from_name, subject)
-
 		@supported_languages.each do |lang|
 			name = name_from_labels("default", lang)
-			templ = @mandrill_connection.templates.add(name, from_addr, from_name, subject, "<div>FIXME</div>", "FIXME", true, [@service_label, "activity-default", "lang-#{lang}"])
+			templ = @mandrill_connection.templates.add(name, from_addr, from_name, subject, "<html><body>Base Template</body></html>", "Base Template", true, [@service_label, "activity-default", "lang-#{lang}"])
 		end
 	end
 
@@ -43,7 +42,7 @@ class ActivityMailer
 	end
 
 	# Registers a new type of template
-	def register_template!(system_name)
+	def register_template!(system_name, from_addr = nil, from_name = nil, subject = nil, html = nil, text = nil)
 		default_templates = @mandrill_connection.templates.list(@service_label).select{|templ| 
 			templ["labels"].include?("activity-default") && templ["published_at"] != nil
 		}
@@ -59,7 +58,7 @@ class ActivityMailer
 			next if lang.nil?
 
 			new_templ_name = name_from_labels(system_name, lang)
-			new_templ = @mandrill_connection.templates.add(new_templ_name, templ["publish_from_email"], templ["publish_from_name"], templ["publish_subject"], templ["publish_code"], templ["publish_text"], true, [@service_label, "activity-#{system_name}", "lang-#{lang}"])
+			new_templ = @mandrill_connection.templates.add(new_templ_name, (from_addr || templ["publish_from_email"]), (from_name || templ["publish_from_name"]), (subject || templ["publish_subject"]), (html || templ["publish_code"]), (text || templ["publish_text"]), true, [@service_label, "activity-#{system_name}", "lang-#{lang}"])
 		end
 	end
 
@@ -102,11 +101,11 @@ class ActivityMailer
 
 		templ = templ_list.first
 
-		mandrill_data = []
+		message_info[:global_merge_vars] ||= {}
 		data.each do |k, v|
-			mandrill_data.push({:name => k, :content => v})
+			message_info[:global_merge_vars].push({:name => k, :content => v})
 		end
-		
+	
 		@mandrill_connection.messages.send_template(templ["name"], data, message_info, false, @mandrill_ip_pool)
 	end
 end
