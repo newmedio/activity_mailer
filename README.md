@@ -65,7 +65,7 @@ ActivityMailer.shared_connection.deliver_email!(
 	"receipt", 
 	"en", 
 	{ "to" => recipients }, 
-	[{ "key" => "val", "key2" => "val2" }]
+	{ "key" => "val", "key2" => "val2" }
 )
 ```
 
