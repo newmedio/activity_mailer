@@ -31,6 +31,7 @@ class ActivityMailer
 
 	# This should only be done once
 	def create_default_template!(from_addr, from_name, subject)
+		return false unless templates_for("default").empty?
 		@supported_languages.each do |lang|
 			name = name_from_labels("default", lang)
 			templ = @mandrill_connection.templates.add(name, from_addr, from_name, subject, "<html><body>Base Template</body></html>", "Base Template", true, [@service_label, "activity-default", "lang-#{lang}"])
@@ -43,6 +44,7 @@ class ActivityMailer
 
 	# Registers a new type of template
 	def register_template!(system_name, from_addr = nil, from_name = nil, subject = nil, html = nil, text = nil)
+		return false unless templates_for(system_name).empty?
 		default_templates = @mandrill_connection.templates.list(@service_label).select{|templ| 
 			templ["labels"].include?("activity-default") && templ["published_at"] != nil
 		}
