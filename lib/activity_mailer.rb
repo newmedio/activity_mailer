@@ -108,6 +108,6 @@ class ActivityMailer
 			message_info[:global_merge_vars].push({:name => k, :content => v})
 		end
 	
-		@mandrill_connection.messages.send_template(templ["name"], data, message_info, false, @mandrill_ip_pool)
+		@mandrill_connection.messages.send_template(templ["name"], [], message_info, false, @mandrill_ip_pool)
 	end
 end
